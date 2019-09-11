@@ -85,8 +85,8 @@ def GetPreidByPickcode(pickcode):
 	r = requests.get(downUrl,headers=header,cookies=d_cookie)
 	file_url=json.loads(r.content)['file_url']
 	head = { "User-Agent" : 'Mozilla/5.0  115disk/11.2.0',"Range":"bytes=0-131071"}
-	cook=r.headers['Set-Cookie'].split(';')[0]
-	token= {cook.split('=')[0]:cook.split('=')[1]}
+	cookie=r.headers['Set-Cookie'].split(';')[0]
+	token= {cookie.split('=')[0]:cookie.split('=')[1]}
 	r2= requests.get(file_url,headers=head,cookies=token)
 	sha = hashlib.sha1()
 	sha.update(r2.content)

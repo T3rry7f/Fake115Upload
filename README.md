@@ -5,7 +5,7 @@
 ```
 $root:python Fake115Upload.py 
 Options:
--c cid: 指定需要导入或导出的CID目录(默认为0，即根目录）。
+-c cid:      指定需要导入或导出的CID目录(默认为0，即根目录）。
 -l filename: 从本地上传一个文件，支持秒传和普通上传两种方式。
 -i filename: 从本地文本读取（文件名|文件大小|文件HASH值|块HASH）字段值并将其对应文件导入到115中。
 -o filename: 从115中导出所有文件的（文件名|文件大小|文件HASH值|块HASH）字段值到本地文本。

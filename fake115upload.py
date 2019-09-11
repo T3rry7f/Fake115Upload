@@ -30,7 +30,7 @@ header = { "User-Agent" : 'Mozilla/5.0  115disk/11.2.0'}
 def usage():
     print(
 """
-Usage:sys.args[0] [option]
+Usage:
 -l filename: Upload a file form local
 -i filename: Import files form a hash link list
 -o filename: Export all hash links to file from 115

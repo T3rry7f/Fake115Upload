@@ -32,9 +32,9 @@ def usage():
 """
 Usage:sys.args[0] [option]
 -l filename: Upload a file form local
--i filename: Import files form hash lists
--o filename: Export all hash to file from 115
--m filename: Export all hash to file from local
+-i filename: Import files form a hash link list
+-o filename: Export all hash links to file from 115
+-m filename: Export all hash links to file from local
 """
 )
 
@@ -80,6 +80,19 @@ def GetUserKey():
 		print "Explired Cookies"
 		return False
 
+def GetPreidByPickcode(pickcode):
+	downUrl='http://webapi.115.com/files/download?pickcode='+pickcode
+	r = requests.get(downUrl,headers=header,cookies=d_cookie)
+	file_url=json.loads(r.content)['file_url']
+	head = { "User-Agent" : 'Mozilla/5.0  115disk/11.2.0',"Range":"bytes=0-131071"}
+	cook=r.headers['Set-Cookie'].split(';')[0]
+	token= {cook.split('=')[0]:cook.split('=')[1]}
+	r2= requests.get(file_url,headers=head,cookies=token)
+	sha = hashlib.sha1()
+	sha.update(r2.content)
+	preid = sha.hexdigest()
+	return preid.upper()
+
 def Get115HashLink(filename):
 	try:
 		with open(filename,'rb') as f:
@@ -104,10 +117,12 @@ def AddCookie(cook):
 			print "ERROR Cookies"
 			return False
 
-def Upload_file_by_sha1(preid,fileid,filesize,filename):  #quick
+def Upload_file_by_sha1(preid,fileid,filesize,filename,cid):  #quick
 	if GetUserKey() is False: return	
 	fileid=fileid.upper()
 	quickid=fileid
+	target='U_1_'+str(cid)
+	print target
 	hash=hashlib.sha1((user_id+fileid+quickid+pickcode+target+'0')).hexdigest()
 	a=userkey+hash+end_string
 	sig=hashlib.sha1(a).hexdigest().upper()
@@ -135,7 +150,7 @@ def Upload_file_by_sha1(preid,fileid,filesize,filename):  #quick
 			return False
 	except:
 		return False
-def Upload_files_by_sha1_from_links(file):  # sample : 1.mp4|26984894148|21AEB458C98643D5E5E4374C9D2ABFAAA4C6DA6
+def Upload_files_by_sha1_from_links(file,cid):  # sample : 1.mp4|26984894148|21AEB458C98643D5E5E4374C9D2ABFAAA4C6DA6
 	for l in open(file,'r'):
 		link=l.split('|')
 		filename=link[0]
@@ -145,7 +160,7 @@ def Upload_files_by_sha1_from_links(file):  # sample : 1.mp4|26984894148|21AEB45
 		if(len(fileid)!=40 and len(preid)!=40):
 			print 'Error Links'
 			return
-		Upload_file_by_sha1(preid,fileid,filesize,filename)
+		Upload_file_by_sha1(preid,fileid,filesize,filename,cid)
 
 def Upload_localFile_whith_sha1(filename): #fast 
 	printInfo( "Trying fast upload...",False,"INFO")
@@ -194,8 +209,8 @@ def Upload_file_from_local(filename):
 	
 def Export_115_sha1_to_file(outfile,cid='0'): #
 	global FileCount
-	uri="http://webapi.115.com/files?aid=1&cid="+cid+"&o=user_ptime&asc=0&offset=0&show_dir=1&limit=5000&code=&scid=&snap=0&natsort=1&source=&format=json"
-	url='http://aps.115.com/natsort/files.php?aid=1&cid='+cid+'&o=file_name&asc=1&offset=0&show_dir=1&limit=5000&code=&scid=&snap=0&natsort=1&source=&format=json&type=&star=&is_share=&suffix=&custom_order=&fc_mix='
+	uri="http://webapi.115.com/files?aid=1&cid="+str(cid)+"&o=user_ptime&asc=0&offset=0&show_dir=1&limit=5000&code=&scid=&snap=0&natsort=1&source=&format=json"
+	url='http://aps.115.com/natsort/files.php?aid=1&cid='+str(cid)+'&o=file_name&asc=1&offset=0&show_dir=1&limit=5000&code=&scid=&snap=0&natsort=1&source=&format=json&type=&star=&is_share=&suffix=&custom_order=&fc_mix='
 	if AddCookie(COOKIES) is False: return
 	resp=''
 	r = requests.get(uri,headers=header,cookies=d_cookie)
@@ -209,10 +224,11 @@ def Export_115_sha1_to_file(outfile,cid='0'): #
 		if d.has_key('fid'):
 			FileCount+=1
 			try:
-				printInfo(d['n']+'|'+str(d['s'])+'|'+d['sha'],False,str(FileCount))
-				of.write(d['n']+'|'+str(d['s'])+'|'+d['sha']+'\n')
+				preid=GetPreidByPickcode(d['pc'])
+				printInfo(d['n']+'|'+str(d['s'])+'|'+d['sha']+'|'+preid,False,str(FileCount))
+				of.write(d['n']+'|'+str(d['s'])+'|'+d['sha']+'|'+preid+'\n')
 			except:
-				of.write(d['n']+'|'+str(d['s'])+'|'+d['sha']+'\n')
+				of.write(d['n']+'|'+str(d['s'])+'|'+d['sha']+'|'+preid+'\n')
 			continue
 		elif  d.has_key('cid'):
 			Export_115_sha1_to_file(outfile,d['cid'])
@@ -233,20 +249,23 @@ if __name__ == '__main__':
 	if len(sys.argv) == 1:
 		usage()
 		sys.exit()
+	cid=0
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], "l:i:o:m:", ["help", "output="])
+		opts, args = getopt.getopt(sys.argv[1:], "l:i:o:m:c:", ["help", "output="])
 		for n,v in opts:
-			if n in ('-l','--local'):
+			if n in ('-c','--cid'):
+				cid=v
+			elif n in ('-l','--local'):
 				Upload_file_from_local(v)	
 			elif n in ('-i','--infile'):
-				Upload_files_by_sha1_from_links(v)				
+				Upload_files_by_sha1_from_links(v,cid)				
 			elif n in ('-o','--outfile'):
-				Export_115_sha1_to_file(v)
+				print cid
+				Export_115_sha1_to_file(v,cid)
 				print 'Total count is:',FileCount
 			elif n in ('-m','--outfile'):
 				Export_115_links_from_local(v)
-				
-				
+							
 	except getopt.GetoptError:
 		print("Argv error,please input")
 		

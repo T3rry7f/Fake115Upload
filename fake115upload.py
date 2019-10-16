@@ -162,7 +162,7 @@ def Upload_files_by_sha1_from_links(file,cid):  # sample : 1.mp4|26984894148|21A
 			return
 		Upload_file_by_sha1(preid,fileid,filesize,filename,cid)
 
-def Upload_localFile_whith_sha1(filename): #fast 
+def Upload_localFile_whith_sha1(filename,cid): #fast 
 	printInfo( "Trying fast upload...",False,"INFO")
 	with open(filename,'rb') as f:
 		sha = hashlib.sha1()
@@ -172,12 +172,12 @@ def Upload_localFile_whith_sha1(filename): #fast
 		sha = hashlib.sha1()
 		sha.update(f.read())
 		TotalHASH=sha.hexdigest()
-		ret=Upload_file_by_sha1(BlockHASH,TotalHASH,GetFileSize(filename),os.path.basename(filename))
+		ret=Upload_file_by_sha1(BlockHASH,TotalHASH,GetFileSize(filename),os.path.basename(filename),cid)
         return ret
 
-def Upload_file_from_local(filename):  
+def Upload_file_from_local(filename,cid=0):  
 
-	if Upload_localFile_whith_sha1(filename):
+	if Upload_localFile_whith_sha1(filename,cid):
 		return
 
 	printInfo( "Trying local upload...",False,"INFO")
@@ -256,7 +256,7 @@ if __name__ == '__main__':
 			if n in ('-c','--cid'):
 				cid=v
 			elif n in ('-l','--local'):
-				Upload_file_from_local(v)	
+				Upload_file_from_local(v,cid)	
 			elif n in ('-i','--infile'):
 				Upload_files_by_sha1_from_links(v,cid)				
 			elif n in ('-o','--outfile'):

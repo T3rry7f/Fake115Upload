@@ -15,7 +15,7 @@ Options:
 # Notice:
   ```
   运行环境： Python2 
-  平台支持 ：Windows/LIUNX/OSX （已测试）
+  平台支持 ：Windows/Linux/OSX （已测试）
   ```
   推荐使用油猴插件版：[安装地址](https://greasyfork.org/ja/scripts/386724-115%E4%B8%80%E9%94%AE%E8%BD%AC%E5%AD%98)
 

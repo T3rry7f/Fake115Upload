@@ -31,10 +31,11 @@ def usage():
     print(
 """
 Usage:
--l filename: Upload a file form local
--i filename: Import files form a hash link list
--o filename: Export all hash links to file from 115
--m filename: Export all hash links to file from local
+-c cid     : Folder Cid
+-u filename: Upload a file form local 
+-i filename: Import files form a hashlink list
+-o filename: Export all file hashlinks from 115
+-b filename: Build and export all files hashlink from local
 """
 )
 
@@ -80,6 +81,17 @@ def GetUserKey():
 		print "Explired Cookies"
 		return False
 
+def ShowFolderPath(cid):
+	url='https://webapi.115.com/files?aid=1&cid='+cid+'&o=user_ptime&asc=0&offset=0&show_dir=1&limit=115&code=&scid=&snap=0&natsort=1&record_open_time=1&source=&format=json&type=&star=&is_q=&is_share='
+	r = requests.get(url,headers=header,cookies=d_cookie)
+	resp=json.loads(r.content)['path']
+	path='{'
+	for f in resp:
+		path+= f['name']+'=>'
+	path=path[:-2]+'}'
+	printInfo(path,False,"[PATH]")
+
+
 def GetPreidByPickcode(pickcode):
 	downUrl='http://webapi.115.com/files/download?pickcode='+pickcode
 	r = requests.get(downUrl,headers=header,cookies=d_cookie)
@@ -122,7 +134,6 @@ def Upload_file_by_sha1(preid,fileid,filesize,filename,cid):  #quick
 	fileid=fileid.upper()
 	quickid=fileid
 	target='U_1_'+str(cid)
-	print target
 	hash=hashlib.sha1((user_id+fileid+quickid+pickcode+target+'0')).hexdigest()
 	a=userkey+hash+end_string
 	sig=hashlib.sha1(a).hexdigest().upper()
@@ -250,20 +261,21 @@ if __name__ == '__main__':
 		usage()
 		sys.exit()
 	cid=0
+	AddCookie(COOKIES)
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], "l:i:o:m:c:", ["help", "output="])
+		opts, args = getopt.getopt(sys.argv[1:], "u:i:o:b:c:", ["help", "output="])
 		for n,v in opts:
 			if n in ('-c','--cid'):
 				cid=v
-			elif n in ('-l','--local'):
+				ShowFolderPath(cid)
+			elif n in ('-u','--upload'):
 				Upload_file_from_local(v,cid)	
 			elif n in ('-i','--infile'):
 				Upload_files_by_sha1_from_links(v,cid)				
 			elif n in ('-o','--outfile'):
-				print cid
 				Export_115_sha1_to_file(v,cid)
 				print 'Total count is:',FileCount
-			elif n in ('-m','--outfile'):
+			elif n in ('-b','--build'):
 				Export_115_links_from_local(v)
 							
 	except getopt.GetoptError:

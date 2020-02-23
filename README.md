@@ -1,6 +1,6 @@
 # Fake115Upload
 模拟115客户端的上传功能，支持本地文件上传及网盘文件(hash)批量导入和导出。(谨慎使用批量导入导出功能，115本身并未提供此类功能，出了问题概不负责。）
-
+推荐使用油猴插件版：[安装地址](https://greasyfork.org/ja/scripts/386724-115%E4%B8%80%E9%94%AE%E8%BD%AC%E5%AD%98)
 # Usage:
 ```
 $root:python Fake115Upload.py 
@@ -17,7 +17,6 @@ Options:
   运行环境： Python2 
   平台支持 ：Windows/Linux/OSX （已测试）
   ```
-  推荐使用油猴插件版：[安装地址](https://greasyfork.org/ja/scripts/386724-115%E4%B8%80%E9%94%AE%E8%BD%AC%E5%AD%98)
 
 
 # ScreenShot:

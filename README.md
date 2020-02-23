@@ -13,7 +13,7 @@ Options:
 -b filename: 从本地当前目录导出所有文件的（文件名|文件大小|文件HASH值|块HASH）字段值到本地文本。
 
 ```
-# Notice:
+# Environment:
   ```
   运行环境： Python2 
   平台支持 ：Windows/Linux/OSX （已测试）

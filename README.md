@@ -15,7 +15,7 @@ Options:
 ```
 # Environment:
   ```
-  运行环境： Python2 
+  运行环境： Python3 
   平台支持 ：Windows/Linux/OSX （已测试）
   ```
 

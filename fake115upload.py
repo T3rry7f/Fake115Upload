@@ -13,7 +13,7 @@ import platform
 from requests_toolbelt.multipart.encoder import MultipartEncoder 
 #from pycookiecheat import chrome_cookies
 #############################################################  Need your cookie
-COOKIES="your cookie"
+COOKIES="last_video_volume=90; acw_tc=784e2c9a15858134046555119e21cb3e26431d7674c4ff8bebe2b947d7ca55; UID=8174050_A1_1586314337; CID=e262f3b94c8bb5f7c597c21bb4ca3276; SEID=a62d6b61a0a9869ea3c72f114ff37589ff4ba93496bdf2277ef1b54c45a86ea0c1b90d478f8dfdb893588d2be30aadb3e0e67b1124a4bd0792abb1dd; 115_lang=zh"
 #############################################################  Need your cookie
 #d_cookie=chrome_cookies('http://115.com')
 d_cookie={}
@@ -47,24 +47,24 @@ def resetColor():
     set_cmd_text_color(0x0c | 0x0a | 0x09,std_out_handle)
 
 def printInfo(info,erorr,notice=''):
-	global std_out_handle
-	sysstr = platform.system()
-	if erorr==True:
-	  	if(sysstr =="Windows"):
-	  		std_out_handle = ctypes.windll.kernel32.GetStdHandle(-11)
-			set_cmd_text_color(0x0c,std_out_handle)
-			sys.stdout.write('['+notice+'] '+info+'\n')
-			resetColor()
-		else : 
-			print '\033[31m'+'['+notice+'] '+info
-	else:
-		if(sysstr =="Windows"):
-			std_out_handle = ctypes.windll.kernel32.GetStdHandle(-11)
-			set_cmd_text_color(0x0a,std_out_handle)
-			sys.stdout.write('['+notice+'] '+info+'\n')
-			resetColor()
-		else:
-			print '\033[32m'+'['+notice+'] '+info
+    global std_out_handle
+    sysstr = platform.system()
+    if erorr==True:
+        if(sysstr =="Windows"):
+            std_out_handle = ctypes.windll.kernel32.GetStdHandle(-11)
+            set_cmd_text_color(0x0c,std_out_handle)
+            sys.stdout.write('['+notice+'] '+info+'\n')
+            resetColor()
+        else : 
+            print('\033[31m'+'['+notice+'] '+info)
+    else:
+        if(sysstr =="Windows"):
+            std_out_handle = ctypes.windll.kernel32.GetStdHandle(-11)
+            set_cmd_text_color(0x0a,std_out_handle)
+            sys.stdout.write('['+notice+'] '+info+'\n')
+            resetColor()
+        else:
+            print('\033[32m'+'['+notice+'] '+info)
 
 def GetFileSize(file):
 	return os.path.getsize(file)
@@ -78,11 +78,11 @@ def GetUserKey():
 		user_id=str(resp['user_id'])
 		userkey=str(resp['userkey']).upper()
 	except Exception as e:
-		print "Explired Cookies"
+		print("Explired Cookies")
 		return False
 
 def ShowFolderPath(cid):
-	url='https://webapi.115.com/files?aid=1&cid='+cid+'&o=user_ptime&asc=0&offset=0&show_dir=1&limit=115&code=&scid=&snap=0&natsort=1&record_open_time=1&source=&format=json&type=&star=&is_q=&is_share='
+	url='https://webapi.115.com/files?aid=1&cid='+str(cid)+'&o=user_ptime&asc=0&offset=0&show_dir=1&limit=115&code=&scid=&snap=0&natsort=1&record_open_time=1&source=&format=json&type=&star=&is_q=&is_share='
 	r = requests.get(url,headers=header,cookies=d_cookie)
 	resp=json.loads(r.content)['path']
 	path='{'
@@ -126,7 +126,7 @@ def AddCookie(cook):
 			d_cookie[name]=value 
 
 		elif not d_cookie :
-			print "ERROR Cookies"
+			print("ERROR Cookies")
 			return False
 
 def Upload_file_by_sha1(preid,fileid,filesize,filename,cid):  #quick
@@ -169,37 +169,37 @@ def Upload_files_by_sha1_from_links(file,cid):  # sample : 1.mp4|26984894148|21A
 		fileid=link[2]
 		preid=link[3].strip()
 		if(len(fileid)!=40 and len(preid)!=40):
-			print 'Error Links'
+			print('Error Links')
 			return
 		Upload_file_by_sha1(preid,fileid,filesize,filename,cid)
 
 def Upload_localFile_whith_sha1(filename,cid): #fast 
-	printInfo( "Trying fast upload...",False,"INFO")
-	with open(filename,'rb') as f:
-		sha = hashlib.sha1()
-		sha.update(f.read(1024*128))
-		BlockHASH = sha.hexdigest()
-		f.seek(0,0)
-		sha = hashlib.sha1()
-		sha.update(f.read())
-		TotalHASH=sha.hexdigest()
-		ret=Upload_file_by_sha1(BlockHASH,TotalHASH,GetFileSize(filename),os.path.basename(filename),cid)
+    printInfo( "Trying fast upload...",False,"INFO")
+    with open(filename,'rb') as f:
+        sha = hashlib.sha1()
+        sha.update(f.read(1024*128))
+        BlockHASH = sha.hexdigest()
+        f.seek(0,0)
+        sha = hashlib.sha1()
+        sha.update(f.read())
+        TotalHASH=sha.hexdigest()
+        ret=Upload_file_by_sha1(BlockHASH,TotalHASH,GetFileSize(filename),os.path.basename(filename),cid)
         return ret
 
 def Upload_file_from_local(filename,cid=0):  
 
-	if Upload_localFile_whith_sha1(filename,cid):
-		return
+    if Upload_localFile_whith_sha1(filename,cid):
+        return
 
-	printInfo( "Trying local upload...",False,"INFO")
-	uri='http://uplb.115.com/3.0/sampleinitupload.php'
+    printInfo( "Trying local upload...",False,"INFO")
+    uri='http://uplb.115.com/3.0/sampleinitupload.php'
 
-	postdata={"userid":user_id,"filename":os.path.basename(filename),"filesize":GetFileSize(filename),"target":target}
-	r = requests.post(uri,headers=header,cookies=d_cookie,data=postdata)
-	resp=json.loads(r.content) 
-	#print resp
-	req_headers = {'Content-Type': "multipart/form-data; boundary=----7d4a6d158c9"}
-	m = MultipartEncoder(fields=[('name', os.path.basename(filename)), 
+    postdata={"userid":user_id,"filename":os.path.basename(filename),"filesize":GetFileSize(filename),"target":target}
+    r = requests.post(uri,headers=header,cookies=d_cookie,data=postdata)
+    resp=json.loads(r.content) 
+    #print resp
+    req_headers = {'Content-Type': "multipart/form-data; boundary=----7d4a6d158c9"}
+    m = MultipartEncoder(fields=[('name', os.path.basename(filename)), 
                              ('key', resp['object']),
                              ('policy',resp['policy']),
                              ('OSSAccessKeyId', resp['accessid']),
@@ -207,16 +207,16 @@ def Upload_file_from_local(filename,cid=0):
                              ( 'callback',resp['callback']),
                              ('signature',resp['signature']),
                              ('file',(os.path.basename(filename),open(filename, 'rb'), 'video/mp4'))],
-                     		boundary='----7d4a6d158c9'
+                            boundary='----7d4a6d158c9'
                     )
-	r = requests.post(resp['host'],headers=req_headers,data=m)
-	try:
-		if json.loads(r.content)['state']==True and json.loads(r.content)['code']==0:
-			printInfo(os.path.basename(filename)+' upload completed.',False,"OK")
-		else:
-			printInfo(os.path.basename(filename)+' upload failed.',False,"OK")
-	except Exception as e:
-		print 'error',e
+    r = requests.post(resp['host'],headers=req_headers,data=m)
+    try:
+        if json.loads(r.content)['state']==True and json.loads(r.content)['code']==0:
+            printInfo(os.path.basename(filename)+' upload completed.',False,"OK")
+        else:
+            printInfo(os.path.basename(filename)+' upload failed.',False,"OK")
+    except Exception as e:
+        print('error',e)
 	
 def Export_115_sha1_to_file(outfile,cid='0'): #
 	global FileCount
@@ -225,14 +225,14 @@ def Export_115_sha1_to_file(outfile,cid='0'): #
 	if AddCookie(COOKIES) is False: return
 	resp=''
 	r = requests.get(uri,headers=header,cookies=d_cookie)
-	if(json.loads(r.content).has_key('data')):
+	if('data' in json.loads(r.content)):
 		resp=json.loads(r.content)['data']
 	else:
 		r = requests.get(url,headers=header,cookies=d_cookie)
 		resp=json.loads(r.content)['data']
 	of= codecs.open(outfile,'a+', encoding='utf-8')
 	for d in resp:	
-		if d.has_key('fid'):
+		if 'fid' in d:
 			FileCount+=1
 			try:
 				preid=GetPreidByPickcode(d['pc'])
@@ -241,17 +241,17 @@ def Export_115_sha1_to_file(outfile,cid='0'): #
 			except:
 				of.write(d['n']+'|'+str(d['s'])+'|'+d['sha']+'|'+preid+'\n')
 			continue
-		elif  d.has_key('cid'):
+		elif  'cid' in d:
 			Export_115_sha1_to_file(outfile,d['cid'])
 	of.close()
 
 def Export_115_links_from_local(outfile):
-	print os.getcwd()
+	print(os.getcwd())
 	files = os.listdir(os.getcwd())
 	of= codecs.open(outfile,'a+')
 	for f in files:
 		if os.path.isfile(f):
-			print f
+			print(f)
 			ret= Get115HashLink(f)
 			of.write(ret)
 	of.close()
@@ -274,7 +274,7 @@ if __name__ == '__main__':
 				Upload_files_by_sha1_from_links(v,cid)				
 			elif n in ('-o','--outfile'):
 				Export_115_sha1_to_file(v,cid)
-				print 'Total count is:',FileCount
+				print('Total count is:',FileCount)
 			elif n in ('-b','--build'):
 				Export_115_links_from_local(v)
 							

@@ -1,6 +1,6 @@
-#!/usr/local/bin/python
 #coding: utf-8
 __author__ = 'T3rry'
+__Python3_author__ = 'LSD08KM'
 
 import os,sys
 import requests
@@ -13,7 +13,7 @@ import platform
 from requests_toolbelt.multipart.encoder import MultipartEncoder 
 #from pycookiecheat import chrome_cookies
 #############################################################  Need your cookie
-COOKIES="last_video_volume=90; acw_tc=784e2c9a15858134046555119e21cb3e26431d7674c4ff8bebe2b947d7ca55; UID=8174050_A1_1586314337; CID=e262f3b94c8bb5f7c597c21bb4ca3276; SEID=a62d6b61a0a9869ea3c72f114ff37589ff4ba93496bdf2277ef1b54c45a86ea0c1b90d478f8dfdb893588d2be30aadb3e0e67b1124a4bd0792abb1dd; 115_lang=zh"
+COOKIES=""
 #############################################################  Need your cookie
 #d_cookie=chrome_cookies('http://115.com')
 d_cookie={}
@@ -134,9 +134,9 @@ def Upload_file_by_sha1(preid,fileid,filesize,filename,cid):  #quick
 	fileid=fileid.upper()
 	quickid=fileid
 	target='U_1_'+str(cid)
-	hash=hashlib.sha1((user_id+fileid+quickid+pickcode+target+'0')).hexdigest()
+	hash=hashlib.sha1((user_id+fileid+quickid+pickcode+target+'0').encode("utf8")).hexdigest()
 	a=userkey+hash+end_string
-	sig=hashlib.sha1(a).hexdigest().upper()
+	sig=hashlib.sha1(a.encode("utf8")).hexdigest().upper()
 	URL="http://uplb.115.com/3.0/initupload.php?isp=0&appid=0&appversion=11.2.0&format=json&sig="+sig
 	postData={
 				'preid':preid,
@@ -197,7 +197,7 @@ def Upload_file_from_local(filename,cid=0):
     postdata={"userid":user_id,"filename":os.path.basename(filename),"filesize":GetFileSize(filename),"target":target}
     r = requests.post(uri,headers=header,cookies=d_cookie,data=postdata)
     resp=json.loads(r.content) 
-    #print resp
+    print(resp)
     req_headers = {'Content-Type': "multipart/form-data; boundary=----7d4a6d158c9"}
     m = MultipartEncoder(fields=[('name', os.path.basename(filename)), 
                              ('key', resp['object']),

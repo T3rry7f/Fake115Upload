@@ -256,6 +256,7 @@ def Export_115_links_from_local(outfile):
 			of.write(ret)
 	of.close()
 			
+			
 if __name__ == '__main__':
 	if len(sys.argv) == 1:
 		usage()
@@ -267,7 +268,7 @@ if __name__ == '__main__':
 		for n,v in opts:
 			if n in ('-c','--cid'):
 				cid=v
-				ShowFolderPath(cid)
+				#ShowFolderPath(cid)
 			elif n in ('-u','--upload'):
 				Upload_file_from_local(v,cid)	
 			elif n in ('-i','--infile'):

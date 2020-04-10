@@ -6,7 +6,9 @@
 当使用 `python Fake115Upload.py -o 115.txt` 从115导出字段到本地，或者使用`python Fake115Upload.py -i 115.txt`创建本地文件时，
 若本地存在旧文件`115.txt`，自动将旧文件重命名。
 
-# Usage:
+# 用法:
+先在fake115upload.py的第17行填入自己的COOKIES
+
 ```
 $root:python Fake115Upload.py 
 Options:

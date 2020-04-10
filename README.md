@@ -1,12 +1,14 @@
 # Fake115Upload_Python3
 原项目<a title="Fake115Upload" target="_blank" href="https://github.com/T3rry7f/Fake115Upload">Fake115Upload</a>运行环境是Python2，修改为Python3
 
-*增加本地文件备份功能：*
+## 增加功能
 
-当使用 `python Fake115Upload.py -o 115.txt` 从115导出字段到本地，或者使用`python Fake115Upload.py -i 115.txt`创建本地文件时，
-若本地存在旧文件`115.txt`，自动将旧文件重命名。
+#### 本地旧文件备份：
 
-# 用法:
+当在本地创建文件时（使用-o或-i ），
+若本地存在同名旧文件，自动将旧文件重命名（文件名后增加时间戳）。
+
+## 用法:
 先在fake115upload.py的第17行填入自己的COOKIES
 
 ```
@@ -19,8 +21,3 @@ Options:
 -b filename: 从本地当前目录导出所有文件的（文件名|文件大小|文件HASH值|块HASH）字段值到本地文本。
 
 ```
-# Environment:
-  ```
-  运行环境： Python3 
-  ```
-

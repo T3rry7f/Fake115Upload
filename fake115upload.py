@@ -10,6 +10,7 @@ import getopt
 import codecs
 import ctypes
 import platform
+import time
 from requests_toolbelt.multipart.encoder import MultipartEncoder 
 #from pycookiecheat import chrome_cookies
 #############################################################  Need your cookie
@@ -256,14 +257,14 @@ def Export_115_links_from_local(outfile):
 			of.write(ret)
 	of.close()
 
-def delExistFile(path): #备份已存在的文件，加上时间戳
+def backupExistFile(path): #备份已存在的文件，加上时间戳
     if os.path.exists(path):  
-        print("[-]"+path+"exist! Will be deleted.")
+        print("[*]"+path+" exist! Will be back up.")
         time_stamp = int(time.time()) #时间戳
         file_timestamp = time.strftime("%Y%m%d%H%M%S", time.localtime(time_stamp))#YYYYMMDDhh24miss  
-        filename=os.path.splitext(file)[0] #文件名
-        filetype=os.path.splitext(file)[1]
-        Newpath=os.path.join(filename+file_timestamp+filetype)
+        filename=os.path.splitext(path)[0] #文件名
+        filetype=os.path.splitext(path)[1]
+        Newpath=os.path.join(filename+"_"+file_timestamp+filetype)
         try:
             os.rename(path,Newpath) 
         except:
@@ -288,11 +289,11 @@ if __name__ == '__main__':
 			elif n in ('-i','--infile'):
 				Upload_files_by_sha1_from_links(v,cid)				
 			elif n in ('-o','--outfile'):
-				delExistFile(v)
+				backupExistFile(v)
 				Export_115_sha1_to_file(v,cid)
 				print('Total count is:',FileCount)
 			elif n in ('-b','--build'):
-				delExistFile(v)
+				backupExistFile(v)
 				Export_115_links_from_local(v)
 							
 	except getopt.GetoptError:

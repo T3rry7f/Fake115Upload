@@ -255,7 +255,21 @@ def Export_115_links_from_local(outfile):
 			ret= Get115HashLink(f)
 			of.write(ret)
 	of.close()
-			
+
+def delExistFile(path): #备份已存在的文件，加上时间戳
+    if os.path.exists(path):  
+        print("[-]"+path+"exist! Will be deleted.")
+        time_stamp = int(time.time()) #时间戳
+        file_timestamp = time.strftime("%Y%m%d%H%M%S", time.localtime(time_stamp))#YYYYMMDDhh24miss  
+        filename=os.path.splitext(file)[0] #文件名
+        filetype=os.path.splitext(file)[1]
+        Newpath=os.path.join(filename+file_timestamp+filetype)
+        try:
+            os.rename(path,Newpath) 
+        except:
+            print("[-]failed!can not delete file 'failed'\n[-](Please run as Administrator)")
+            os._exit(0)
+
 			
 if __name__ == '__main__':
 	if len(sys.argv) == 1:
@@ -274,9 +288,11 @@ if __name__ == '__main__':
 			elif n in ('-i','--infile'):
 				Upload_files_by_sha1_from_links(v,cid)				
 			elif n in ('-o','--outfile'):
+				delExistFile(v)
 				Export_115_sha1_to_file(v,cid)
 				print('Total count is:',FileCount)
 			elif n in ('-b','--build'):
+				delExistFile(v)
 				Export_115_links_from_local(v)
 							
 	except getopt.GetoptError:

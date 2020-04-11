@@ -47,10 +47,10 @@ build	从本地当前目录导出所有文件的（文件名|文件大小|文件
 #### CID在哪里：
 
 在地址栏。
-![](.\readme\1.png)
+![CID](.\readme\1.png)
 图中cid=0，即当前网页打开的文件夹目录的cid是0。
 
 #### COOKIES在哪里：
 
 在115浏览器打开网盘文件夹，点击键盘F12，出现DeveloperTools。再刷新网页，看DeveloperTools的Network栏，点击下面Name列表里files?开头的条目，右侧图中圈出的就是COOKIES。复制到配置文件即可。
-![](.\readme\2.png)
+![COOKIES](.\readme\2.png)

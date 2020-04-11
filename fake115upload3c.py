@@ -6,39 +6,29 @@ import os,sys
 import requests
 import json
 import hashlib
+"""
 import getopt
+"""
 import codecs
 import ctypes
 import platform
 import time
+from configparser import ConfigParser
 from requests_toolbelt.multipart.encoder import MultipartEncoder 
-#from pycookiecheat import chrome_cookies
-#############################################################  Need your cookie
-COOKIES=""
-#############################################################  Need your cookie
-#d_cookie=chrome_cookies('http://115.com')
-d_cookie={}
-user_id=""
-userkey=""
-target="U_1_0"
-end_string="000000"
-app_ver='11.2.0'
-pickcode=""
-FileCount=0
-std_out_handle=0
-header = { "User-Agent" : 'Mozilla/5.0  115disk/11.2.0'}
 
+"""
 def usage():
     print(
-"""
+""
 Usage:
 -c cid     : Folder Cid
 -u filename: Upload a file form local 
 -i filename: Import files form a hashlink list
 -o filename: Export all file hashlinks from 115
 -b filename: Build and export all files hashlink from local
-"""
+""
 )
+"""
 
 def set_cmd_text_color(color, handle=std_out_handle):
     Bool = ctypes.windll.kernel32.SetConsoleTextAttribute(handle, color)
@@ -119,16 +109,6 @@ def Get115HashLink(filename):
 			return filename+'|'+str(os.path.getsize(filename))+'|'+TotalHASH+'|'+BlockHASH+'\n'
 	except Exception as e:
 		pass
-
-def AddCookie(cook):
-	for line in COOKIES.split(';'):
-		if '=' in line:
-			name,value=line.strip().split('=',1)  
-			d_cookie[name]=value 
-
-		elif not d_cookie :
-			print("ERROR Cookies")
-			return False
 
 def Upload_file_by_sha1(preid,fileid,filesize,filename,cid):  #quick
 	if GetUserKey() is False: return	
@@ -257,7 +237,7 @@ def Export_115_links_from_local(outfile):
 			of.write(ret)
 	of.close()
 
-def backupExistFile(path): #备份已存在的文件，加上时间戳
+def backupExistFile(path): #重命名已存在的文件，加上时间戳
     if os.path.exists(path):  
         print("[*]"+path+" exist! Will be back up.")
         time_stamp = int(time.time()) #时间戳
@@ -268,16 +248,60 @@ def backupExistFile(path): #备份已存在的文件，加上时间戳
         try:
             os.rename(path,Newpath) 
         except:
-            print("[-]failed!can not delete file 'failed'\n[-](Please run as Administrator)")
+            print("[-]failed!can not rename file 'failed'\n[-](Please run as Administrator)")
             os._exit(0)
 
+
+#from pycookiecheat import chrome_cookies
+#############################################################  Need your cookie
+COOKIES=""
+#############################################################  Need your cookie
+#d_cookie=chrome_cookies('http://115.com')
+d_cookie={}
+user_id=""
+userkey=""
+target="U_1_0"
+end_string="000000"
+app_ver='11.2.0'
+pickcode=""
+FileCount=0
+std_out_handle=0
+header = { "User-Agent" : 'Mozilla/5.0  115disk/11.2.0'}
+
+def AddCookie(COOKIES):
+    d_cookie={}
+	for line in COOKIES.split(';'):
+		if '=' in line:
+			name,value=line.strip().split('=',1)  
+			d_cookie[name]=value 
+		else:
+			print("Cookies错误")
+			os._exit(0)
+    return d_cookie
 			
 if __name__ == '__main__':
+    config = ConfigParser()
+    config.read(config_file, encoding='UTF-8')
+    COOKIES = config['webhard']['COOKIES']
+    option = config['webhard']['option']
+    upcid = config['webhard']['upcid']
+    getcid = config['webhard']['getcid']
+    upload_file_name = config['webhard']['upload_file_name']
+    uplinks_file = config['webhard']['uplinks_file']
+    getlinks_file = config['webhard']['getlinks_file']
+    """
 	if len(sys.argv) == 1:
 		usage()
 		sys.exit()
 	cid=0
-	AddCookie(COOKIES)
+    """
+    d_cookie = AddCookie(COOKIES)  #给d_cookie赋值
+    if option = :
+    elif option = :
+    elif option = :
+    elif option = :
+    else:
+        print("option变量错误")
 	try:
 		opts, args = getopt.getopt(sys.argv[1:], "u:i:o:b:c:", ["help", "output="])
 		for n,v in opts:
@@ -299,3 +323,5 @@ if __name__ == '__main__':
 	except getopt.GetoptError:
 		print("Argv error,please input")
 		
+    print("[+]运行结束!!!")
+    input("[+][+]按任意键关闭。")

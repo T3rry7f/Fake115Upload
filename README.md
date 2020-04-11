@@ -7,8 +7,8 @@
 
 #### 本地旧文件备份：
 
-当在本地创建文件时（使用-o或-i ），
-若本地存在同名旧文件，自动将旧文件重命名（文件名后增加时间戳）。
+当在本地创建文档时（getlinks、build命令），
+若本地存在同名旧文档，自动将旧文档重命名（文件名后增加时间戳）。
 
 #### 配置文件：
 
@@ -33,7 +33,7 @@ upcid=0				(与upfile、uplinks命令对应) 指定上传到哪个CID目录，�
 getcid=0			(与getlinks命令对应) 指定获取哪个CID目录的转存链 
 upload_file_name=1.mp4			(与upfile命令对应) 要上传到网盘的文件全名，包括扩展名
 uplinks_file=115uplinks.txt		(与uplinks命令对应) 存有要上传的转存链的本地文档
-getlinks_file=115links.txt		(与getlinks、build命令对应) 将储存转存链的文档
+getlinks_file=115links.txt		(与getlinks、build命令对应) 将要储存转存链的文档
 ```
 #### option变量（命令）：
 

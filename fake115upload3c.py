@@ -60,7 +60,7 @@ def ShowFolderPath(cid):
 
 def Get115HashLink(filename):
     try:
-        with open(filename,'rb') as f:
+        with open(filename,'rb', encoding='UTF-8') as f:
             sha = hashlib.sha1()
             sha.update(f.read(1024*128))
             BlockHASH = sha.hexdigest()
@@ -74,7 +74,7 @@ def Get115HashLink(filename):
 def Export_115_links_from_local(outfile):
     print(os.getcwd())
     files = os.listdir(os.getcwd())
-    of= codecs.open(outfile,'a+')
+    of= codecs.open(outfile,'a+', encoding='UTF-8')
     for f in files:
         if os.path.isfile(f):
             print(f)
@@ -209,7 +209,7 @@ def Upload_file_from_local(filename, cid, pickcode, header, d_cookie):  #上传�
 
 def Upload_files_by_sha1_from_links(file, cid, pickcode, header, d_cookie):  #上传文档内的链接 sample : 1.mp4|26984894148|21AEB458C98643D5E5E4374C9D2ABFAAA4C6DA6
     #添加, pickcode, header, d_cookie
-    for l in open(file,'r'):
+    for l in open(file,'r', encoding='UTF-8'):
         link=l.split('|')
         filename=link[0]
         filesize=link[1]

@@ -33,7 +33,7 @@ upcid=0				(与upfile、uplinks命令对应) 指定上传到哪个CID目录，�
 getcid=0			(与getlinks命令对应) 指定获取哪个CID目录的转存链 
 upload_file_name=1.mp4			(与upfile命令对应) 要上传到网盘的文件全名，包括扩展名
 uplinks_file=115uplinks.txt		(与uplinks命令对应) 存有要上传的转存链的本地文档
-getlinks_file=115links.txt		(与getlinks、build命令对应) 将要储存转存链的文档
+links_outfile=115links.txt		(与getlinks、build命令对应) 将要储存转存链的文档
 ```
 #### option变量（命令）：
 
@@ -54,3 +54,7 @@ build	从本地当前目录导出所有文件的（文件名|文件大小|文件
 
 在115浏览器打开网盘文件夹，点击键盘F12，出现DeveloperTools。再刷新网页，看DeveloperTools的Network栏，点击下面Name列表里files?开头的条目，右侧图中圈出的就是COOKIES。复制到配置文件即可。
 ![COOKIES](./readme/2.png)
+
+### 注意：
+
+命名不能包含/:*?"<>|。&

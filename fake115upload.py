@@ -32,8 +32,8 @@ def usage():
 """
 Usage:
 -c cid     : Folder Cid
--u filename: Upload a file form local 
--i filename: Import files form a hashlink list
+-u filename: Upload a file from local 
+-i filename: Import files from a hashlink list
 -o filename: Export all file hashlinks from 115
 -b filename: Build and export all files hashlink from local
 """

@@ -6,10 +6,10 @@ import os,sys
 import requests
 import json
 import hashlib
-import getopt
 import codecs
 import ctypes
 import platform
+import argparse
 from requests_toolbelt.multipart.encoder import MultipartEncoder 
 #from pycookiecheat import chrome_cookies
 #############################################################  Need your cookie
@@ -266,24 +266,37 @@ if __name__ == '__main__':
 	if len(sys.argv) == 1:
 		usage()
 		sys.exit()
-	cid=0
+	cid = 0
 	AddCookie(COOKIES)
-	try:
-		opts, args = getopt.getopt(sys.argv[1:], "u:i:o:b:c:", ["help", "output="])
-		for n,v in opts:
-			if n in ('-c','--cid'):
-				cid=v
-				ShowFolderPath(cid)
-			elif n in ('-u','--upload'):
-				Upload_file_from_local(v,cid)	
-			elif n in ('-i','--infile'):
-				Upload_files_by_sha1_from_links(v,cid)				
-			elif n in ('-o','--outfile'):
-				Export_115_sha1_to_file(v,cid)
-				print 'Total count is:',FileCount
-			elif n in ('-b','--build'):
-				Export_115_links_from_local(v)
-							
-	except getopt.GetoptError:
-		print("Argv error,please input")
+
+	parser = argparse.ArgumentParser()
+	parser.add_argument('-c','--cid',help='dest folder cid' ,dest='cid',default=None)
+	parser.add_argument('-u','--upload',help='upload a file from local ',dest='upload_file',default=None)
+	parser.add_argument('-i','--infile',help='import files from a hashlink list',dest='in_file',default=None)
+	parser.add_argument('-o','--outfile',help='Export all file hashlinks from 115',dest='out_file',default=None)
+	parser.add_argument('-b','--build',help='Build and export all files hashlink from local',dest='build_file',default=None)
+
+	args = parser.parse_args()
+
+	cid = args.cid if args.cid else 0
+	upload_file = args.upload_file if args.upload_file else 0
+	in_file = args.in_file if args.in_file else 0
+	out_file = args.out_file if args.out_file else 0
+	build_file = args.build_file if args.build_file else 0
+
+
+	if cid:
+		ShowFolderPath(cid)
 		
+	if upload_file:
+		Upload_file_from_local(upload_file,cid)
+
+	if in_file:
+		Upload_files_by_sha1_from_links(in_file,cid)
+
+	if out_file:
+		Export_115_sha1_to_file(out_file,cid)
+		print 'Total count is:',FileCount
+
+	if build_file:
+		Export_115_links_from_local(build_file)

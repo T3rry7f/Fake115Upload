@@ -175,16 +175,22 @@ def Upload_files_by_sha1_from_links(file,cid):  # sample : 1.mp4|26984894148|21A
 
 def Upload_localFile_whith_sha1(filename,cid): #fast 
 	printInfo( "Trying fast upload...",False,"INFO")
+	BUF_SIZE = 65536 # read stuff in 64kb chunks
 	with open(filename,'rb') as f:
 		sha = hashlib.sha1()
 		sha.update(f.read(1024*128))
 		BlockHASH = sha.hexdigest()
 		f.seek(0,0)
+
 		sha = hashlib.sha1()
-		sha.update(f.read())
+		while True:
+			data = f.read(BUF_SIZE)
+			if not data:
+				break
+			sha.update(data)
 		TotalHASH=sha.hexdigest()
-		ret=Upload_file_by_sha1(BlockHASH,TotalHASH,GetFileSize(filename),os.path.basename(filename),cid)
-        return ret
+	ret=Upload_file_by_sha1(BlockHASH,TotalHASH,GetFileSize(filename),os.path.basename(filename),cid)
+	return ret
 
 def Upload_file_from_local(filename,cid=0):  
 

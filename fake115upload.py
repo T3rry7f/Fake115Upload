@@ -89,7 +89,7 @@ def ShowFolderPath(cid):
 	for f in resp:
 		path+= f['name']+'=>'
 	path=path[:-2]+'}'
-	printInfo(path,False,"[PATH]")
+	printInfo(path,False,"PATH")
 
 
 def GetPreidByPickcode(pickcode):
@@ -155,9 +155,11 @@ def Upload_file_by_sha1(preid,fileid,filesize,filename,cid):  #quick
 	try:
 		if json.loads(r.content)['status']==2 and json.loads(r.content)['statuscode']==0:
 			printInfo(filename+' upload completed.',False,"OK")
+			print("=====================")
 			return True
 		else:
 			printInfo(filename+' upload failed.',True,"ERROR")
+			print("=====================")
 			return False
 	except:
 		return False
@@ -174,7 +176,7 @@ def Upload_files_by_sha1_from_links(file,cid):  # sample : 1.mp4|26984894148|21A
 		Upload_file_by_sha1(preid,fileid,filesize,filename,cid)
 
 def Upload_localFile_whith_sha1(filename,cid): #fast 
-	printInfo( "Trying fast upload...",False,"INFO")
+	printInfo("File: "+filename+" Trying fast upload...",False,"INFO")
 	BUF_SIZE = 65536 # read stuff in 64kb chunks
 	with open(filename,'rb') as f:
 		sha = hashlib.sha1()
@@ -267,10 +269,12 @@ if __name__ == '__main__':
 		usage()
 		sys.exit()
 	cid = 0
+
 	AddCookie(COOKIES)
 
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-c','--cid',help='dest folder cid' ,dest='cid',default=None)
+	parser.add_argument('--only-fast',help='only upload with sha1',dest='upload_mode',action='store_true')
 	parser.add_argument('-u','--upload',help='upload a file from local ',dest='upload_file',default=None)
 	parser.add_argument('-i','--infile',help='import files from a hashlink list',dest='in_file',default=None)
 	parser.add_argument('-o','--outfile',help='Export all file hashlinks from 115',dest='out_file',default=None)
@@ -283,13 +287,21 @@ if __name__ == '__main__':
 	in_file = args.in_file if args.in_file else 0
 	out_file = args.out_file if args.out_file else 0
 	build_file = args.build_file if args.build_file else 0
+	only_fast_upload = args.upload_mode if args.upload_mode else 0
 
 
 	if cid:
 		ShowFolderPath(cid)
 		
 	if upload_file:
-		Upload_file_from_local(upload_file,cid)
+		if only_fast_upload:
+			print 'Upload mode: [x] only upload file by sha1'
+			ret = Upload_localFile_whith_sha1(upload_file,cid)
+			if not ret:
+				print("[FAIL] "+ upload_file)
+		else:
+			print 'Upload mode: [x] upload file by sha1. [x] upload by sending binary data'
+			Upload_file_from_local(upload_file,cid)
 
 	if in_file:
 		Upload_files_by_sha1_from_links(in_file,cid)

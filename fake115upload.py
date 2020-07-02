@@ -10,6 +10,7 @@ import codecs
 import ctypes
 import platform
 import argparse
+from tqdm import tqdm
 from requests_toolbelt.multipart.encoder import MultipartEncoder 
 #from pycookiecheat import chrome_cookies
 #############################################################  Need your cookie
@@ -185,11 +186,14 @@ def Upload_localFile_whith_sha1(filename,cid): #fast
 		f.seek(0,0)
 
 		sha = hashlib.sha1()
+		pbar = tqdm(total=GetFileSize(filename),unit='B',unit_scale=True, unit_divisor=1024)
 		while True:
 			data = f.read(BUF_SIZE)
 			if not data:
+				pbar.close()
 				break
 			sha.update(data)
+			pbar.update(len(data))
 		TotalHASH=sha.hexdigest()
 	ret=Upload_file_by_sha1(BlockHASH,TotalHASH,GetFileSize(filename),os.path.basename(filename),cid)
 	return ret

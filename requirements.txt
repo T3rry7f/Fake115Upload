@@ -1,0 +1,6 @@
+hexdump==3.3
+ecdsa==0.16.0
+lz4==2.2.1
+requests_toolbelt==0.9.1
+requests==2.22.0
+pycryptodome==3.9.8

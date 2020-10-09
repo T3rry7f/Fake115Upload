@@ -5,26 +5,26 @@ __author__ = 'T3rry'
 from requests_toolbelt.multipart.encoder import MultipartEncoder 
 from ecdsa import ECDH, NIST224p,SigningKey
 from Crypto.Cipher import AES
-import sys,os,time,hashlib,codecs
-import platform,random,requests
-import json,lz4.block,zlib,base64
-import getopt,ctypes
+import hashlib,base64,lz4.block,zlib
+import sys,os,time,platform
+import json,requests,random
+import getopt,ctypes,codecs
 
 
-COOKIE="need your cookie"
+COOKIE='need your cookie'
 
 class Fake115Client(object):
 
-	def __init__(self, curve=NIST224p):
+	def __init__(self, cookie):
 		self.version='23.9.1'
 		self.app_version='25.2.2'
-		self.cookie=COOKIE
+		self.cookie=cookie
 		self.ua='Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36 115Browser/23.9.1'
 		self.content_type='application/x-www-form-urlencoded'
 		self.header={"User-Agent" : self.ua,"Content-Type": self.content_type, "Cookie":self.cookie }
 		self.remote_pubkey='0457A29257CD2320E5D6D143322FA4BB8A3CF9D3CC623EF5EDAC62B7678A89C91A83BA800D6129F522D034C895DD2465243ADDC250953BEEBA'
 		self.crc_salt='^j>WD3Kr?J2gLFjD4W2y@'
-		self.curve = curve
+		self.curve = NIST224p
 		self.local_private_key=None        
 		self.aes_key=None
 		self.aes_iv=None
@@ -33,9 +33,9 @@ class Fake115Client(object):
 		self.user_key=None
 		self.std_out_handle=None
 		self.filecount=0
-		self.cid=None
+		self.cid=0
 		
-		sk =SigningKey.generate(curve=NIST224p)         #SigningKey.from_string(string=self.local_private_key.decode('hex'),curve=NIST224p)
+		sk =SigningKey.generate(curve=self.curve)         
 		ecdh = ECDH(curve=self.curve)
 		ecdh.load_private_key(sk)
 		local_public_key = ecdh.get_public_key()._compressed_encode()
@@ -118,7 +118,6 @@ class Fake115Client(object):
 		return base64.b64encode(tmp)
 
 	def ec115_decode(self,data):
-
 		BS = AES.block_size
 		pad =lambda s: s +(BS - len(s)% BS)* chr(0)
 		unpad =lambda s : s[0:-ord(s[-1])]
@@ -135,7 +134,6 @@ class Fake115Client(object):
 	    self.set_cmd_text_color(0x0c | 0x0a | 0x09,self.std_out_handle)
 
 	def log(self,info,erorr,notice=''):
-
 		sysstr = platform.system()
 		if erorr==True:
 		  	if(sysstr =="Windows"):
@@ -158,7 +156,6 @@ class Fake115Client(object):
 		return str(os.path.getsize(file))
 
 	def get_userkey(self):
-
 		try:	
 			r = requests.get("http://proapi.115.com/app/uploadinfo",headers=self.header)		
 			resp=json.loads(r.content) 
@@ -170,7 +167,6 @@ class Fake115Client(object):
 			return False			
 
 	def show_folder_path(self):
-
 		url='https://webapi.115.com/files?aid=1&cid='+self.cid+'&o=user_ptime&asc=0&offset=0&show_dir=1&limit=115&code=&scid=&snap=0&natsort=1&record_open_time=1&source=&format=json&type=&star=&is_q=&is_share='
 		r = requests.get(url,headers=self.header)
 		resp=json.loads(r.content)['path']
@@ -180,9 +176,7 @@ class Fake115Client(object):
 		path=path[:-2]+'}'
 		self.log(path,False,"PATH")
 
-
 	def get_preid(self,pickcode):
-
 		downUrl='http://webapi.115.com/files/download?pickcode='+pickcode
 		r = requests.get(downUrl,headers=self.header)
 		file_url=json.loads(r.content)['file_url']
@@ -201,7 +195,6 @@ class Fake115Client(object):
 		return preid.upper()
 
 	def get_link(self,filename):
-
 		try:
 			with open(filename,'rb') as f:
 				sha = hashlib.sha1()
@@ -216,9 +209,7 @@ class Fake115Client(object):
 			print(e)
 			return
 	
-
-	def import_file_with_sha1(self,preid,fileid,filesize,filename):  #pc
-	
+	def import_file_with_sha1(self,preid,fileid,filesize,filename):  # pc api
 		fileid=fileid
 		target='U_1_'+str(self.cid)
 		tm=int(time.time())
@@ -233,7 +224,6 @@ class Fake115Client(object):
 		postData=('api_version=2.0.0.0&fileid=%s&filename=%s&filesize=%s&preid=%s&target=%s&userid=%s')%(fileid,filename,filesize,preid,target,self.user_id)
 		
 		r = requests.post(url, data=self.ec115_encode_data(postData),headers=self.header) 
-	
 		response=self.ec115_decode(r.content)
 
 		try:
@@ -247,11 +237,10 @@ class Fake115Client(object):
 			print(e)
 			return 
 			
-  	def import_file_with_sha1_android(preid,fileid,filesize,filename,cid):  #mobile
-			
+  	def import_file_with_sha1_android(preid,fileid,filesize,filename):  # mobile api	
 		fileid=fileid.upper()
 		quickid=fileid
-		target='U_1_'+str(cid)
+		target='U_1_'+str(self.cid)
 		hash=hashlib.sha1((user_id+fileid+quickid+pickcode+target+'0')).hexdigest()
 		a=userkey+hash+end_string
 		sig=hashlib.sha1(a).hexdigest().upper()
@@ -280,7 +269,6 @@ class Fake115Client(object):
 			return False
 
 	def upload_file_with_sha1(self,filename): 
-
 		self.log( "Trying fast upload...",False,"INFO")
 		with open(filename,'rb') as f:
 			sha1 = hashlib.sha1()
@@ -297,8 +285,7 @@ class Fake115Client(object):
 			ret=self.import_file_with_sha1(blockhash,totalhash,self.get_file_size(filename),os.path.basename(filename))
 	        return ret
 
-	def export_link_to_file(self,outfile,cid): #
-		
+	def export_link_to_file(self,outfile,cid): #		
 		uri="http://webapi.115.com/files?aid=1&cid="+str(cid)+"&o=user_ptime&asc=0&offset=0&show_dir=1&limit=5000&code=&scid=&snap=0&natsort=1&source=&format=json"
 		url='http://aps.115.com/natsort/files.php?aid=1&cid='+str(cid)+'&o=file_name&asc=1&offset=0&show_dir=1&limit=5000&code=&scid=&snap=0&natsort=1&source=&format=json&type=&star=&is_share=&suffix=&custom_order=&fc_mix='
 		
@@ -331,7 +318,6 @@ class Fake115Client(object):
 		of.close()
 
 	def import_file_from_link(self,file):  # 
-
 		for l in open(file,'r'):
 			link=l.split('|')
 			filename=link[0]
@@ -343,16 +329,14 @@ class Fake115Client(object):
 				return
 			self.import_file_with_sha1(preid,fileid,filesize,filename)
 
-
 	def upload_file(self,filename):  
-
 		if self.upload_file_with_sha1(filename):
 			return
 
 		self.log( "Trying local upload...",False,"INFO")
 		uri='http://uplb.115.com/3.0/sampleinitupload.php'
 
-		postdata={"userid":self.user_id,"filename":os.path.basename(filename),"filesize":self.get_file_size(filename),"target":"U_1_"+self.cid}
+		postdata={"userid":self.user_id,"filename":os.path.basename(filename),"filesize":self.get_file_size(filename),"target":"U_1_"+str(self.cid)}
 		r = requests.post(uri,headers=self.header,data=postdata)
 		resp=json.loads(r.content) 
 
@@ -377,7 +361,6 @@ class Fake115Client(object):
 			print('error',e)
 
 	def build_links_from_disk(self,outfile):
-
 		self.log(os.getcwd(),False,'PATH')
 		files = os.listdir(os.getcwd())
 		of= codecs.open(outfile,'a+')
@@ -397,10 +380,10 @@ def usage():
     print(
 """
 Usage:
--c cid     : Folder cid
--u filename: Upload a file form local disk
--i filename: Import files form  hashlink list
--o filename: Export file hashlink from 115
+-c cid     : Folder cid (default set 0)
+-u filename: Upload file form local disk
+-i filename: Import file from hashlink list
+-o filename: Export hashlink list from 115
 -b filename: Build file hashlink from local disk
 """
 )
@@ -412,7 +395,7 @@ if __name__ == '__main__':
 		usage()
 		sys.exit()
 
-	cli=Fake115Client()
+	cli=Fake115Client(COOKIE)
 
 	if cli.user_key==None:
 		sys.exit()
@@ -430,7 +413,7 @@ if __name__ == '__main__':
 				cli.import_file_from_link(v)				
 			elif n in ('-o','--outfile'):				
 				cli.export_link_to_file(v,cli.cid)
-				print('Total count is:',cli.filecount)
+				print('Total file count :',cli.filecount)
 			elif n in ('-b','--build'):
 				cli.build_links_from_disk(v)
 							

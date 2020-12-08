@@ -1,4 +1,4 @@
-
+//Create by T3rry
 
 var forge = require('node-forge');
 var urlencode = require('urlencode');
@@ -197,35 +197,3 @@ function  m115_decode(ciphertext)
 	return arrayTostring(plaintext)
 }
 
-
-function test()
-{
-
-var post_data = 'data='+m115_encode('{"pickcode":"xxxxxxxxxxxxxxxxxxxxxxx"}')
-var options = {
-host: 'proapi.115.com',
-port: 80,
-path: '/app/chrome/downurl',
-method: 'post',
-headers: {
-'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36 115Browser/23.9.2',
-'Content-Type':'application/x-www-form-urlencoded',
-'Content-Length':post_data.length,
-'Cookie': 'xxxxxxxxxxxxxxxxxxxxxxxxx'
-}};
-
-  var post_req = http.request(options, function(res) {
-      res.setEncoding('utf8');
-      res.on('data', function (chunk) {
-          var bodyString = JSON.parse(chunk)['data'];
-          resp=m115_decode(bodyString)          
-          console.log(JSON.parse(resp))
-      });
-  });
-
-  post_req.write(post_data);
-  post_req.end();
-
-}
-
-test()

@@ -1,4 +1,4 @@
-// Test by @T3rry
+
 
 var forge = require('node-forge');
 var urlencode = require('urlencode');

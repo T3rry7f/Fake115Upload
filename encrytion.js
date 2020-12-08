@@ -156,13 +156,13 @@ function genRandom(len)
 }
 function m115_encode(plaintext)
 {
-	   console.log('m115_encode:')
+       console.log('m115_encode:')
+       
+       key_l=g_key_l
 
-	   key_l=g_key_l
+       m115_l_rnd_key=genRandom(16)
 
-	   m115_l_rnd_key=genRandom(16)
-
-	   m115_xorinit(m115_l_rnd_key,4)
+       m115_xorinit(m115_l_rnd_key,4)
 
        var tmp=xor115_enc(stringToArray(plaintext),key_s).reverse()
 

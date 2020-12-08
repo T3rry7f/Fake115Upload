@@ -74,16 +74,6 @@ function arrayTostring(array){
 }
 
 
-function dump(s){
-
-	var ss=''
-	for (var i = 0; i <s.length; i++) {
-		ss+=(s[i].toString(16))
-	}
-    console.log(ss)
-
-}
-
 function m115_xorinit(randkey,sk_len)
 {
 	var	length=sk_len *(sk_len-1)
@@ -192,7 +182,7 @@ function  m115_decode(ciphertext)
 		index+=128
 	}
 	
-    m115_s_rnd_key =stringToArray(plaintext.slice(0,16))
+    	m115_s_rnd_key =stringToArray(plaintext.slice(0,16))
 
 	plaintext=plaintext.slice(16);
 

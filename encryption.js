@@ -73,8 +73,15 @@ function arrayTostring(array){
 	return result;
 }
 
+function m115_init()
+{
+	m115_l_rnd_key=[]
+	m115_s_rnd_key=[]
+	key_s=[]
+	key_l=[]
+}
 
-function m115_xorinit(randkey,sk_len)
+function m115_setkey(randkey,sk_len)
 {
 	var	length=sk_len *(sk_len-1)
 	var	index=0
@@ -110,17 +117,15 @@ function xor115_enc(src,key){
 
 	if (pad >0){
 
-			for (var i = 0; i <pad; i++) {
-
-				secret.push((src[i])^key[i])
-			}
-				
-			src=src.slice(pad)
-		}
+	for (var i = 0; i <pad; i++)
+	{
+		secret.push((src[i])^key[i])
+	}		
+		src=src.slice(pad)
+	}
 			
         for (var i = 0; i<src.length; i++) {
-        	if (num>=lkey){
-
+		if (num>=lkey){
         		num=num%lkey
         	}
         	
@@ -139,20 +144,23 @@ function genRandom(len)
   var chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz23456789';    
 　var maxPos = chars.length;
 　　
-　　for (i = 0; i < len; i++) {
+　for (i = 0; i < len; i++) {
 　　　　keys.push(chars.charAt(Math.floor(Math.random() * maxPos)).charCodeAt(0));
 　　}
 　　return keys;
 }
 function m115_encode(plaintext)
+
 {
        console.log('m115_encode:')
+	
+       m115_init()
        
        key_l=g_key_l
 
        m115_l_rnd_key=genRandom(16)
 
-       m115_xorinit(m115_l_rnd_key,4)
+       m115_setkey(m115_l_rnd_key,4)
 
        var tmp=xor115_enc(stringToArray(plaintext),key_s).reverse()
 
@@ -186,9 +194,9 @@ function  m115_decode(ciphertext)
 
 	plaintext=plaintext.slice(16);
 
-	m115_xorinit(m115_l_rnd_key,4)
+	m115_setkey(m115_l_rnd_key,4)
 
-	m115_xorinit(m115_s_rnd_key,12)
+	m115_setkey(m115_s_rnd_key,12)
 
 	tmp=xor115_enc(stringToArray(plaintext),key_l).reverse()
 

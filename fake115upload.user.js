@@ -264,7 +264,7 @@ wlHF+mkTJpKd5Wacef0vV+xumqNorvLpIXWKwxNaoHM=\
         var info='';
         GM_xmlhttpRequest({
             method: "GET",
-            url: 'https://webapi.115.com/files?aid=1&cid=0&o=user_ptime&asc=0&offset=0&show_dir=1&limit=115&code=&scid=&snap=0&natsort=1&record_open_time=1&source=&format=json',
+            url: 'https://aps.115.com/natsort/files.php?aid=1&cid=0&o=file_name&asc=1&offset=0&show_dir=1&limit=1150&code=&scid=&snap=0&natsort=1&record_open_time=1&source=&format=json&fc_mix=0&type=&star=&is_q=&is_share=',
             responseType: 'json',
             onload: function(response) {
                 if (response.status === 200) {

@@ -400,7 +400,7 @@ wlHF+mkTJpKd5Wacef0vV+xumqNorvLpIXWKwxNaoHM=\
                                             }
                                             else
                                             {
-                                                GetFileLink([line.n+'|'+line.s+'|'+line.sha, line.pc],false);
+                                                GetFileLink([line.n+'|'+line.s+'|'+line.sha,line.pc,line.fid],false);
                                             }
                                         }
                                                          )
@@ -444,7 +444,7 @@ wlHF+mkTJpKd5Wacef0vV+xumqNorvLpIXWKwxNaoHM=\
                             console.log(hProtocol+info[0]+'|'+preid);
                             window.linkText+=hProtocol+info[0]+'|'+preid+'\n'
                             if(flag){
-                                var link= prompt("复制分享链接到剪贴板",hProtocol+info[0]+'|'+preid);
+                                var link= prompt("复制链接到剪贴板",hProtocol+info[0]+'|'+preid);
                             }
                         }
                         catch(err)
@@ -466,7 +466,6 @@ wlHF+mkTJpKd5Wacef0vV+xumqNorvLpIXWKwxNaoHM=\
             method: "POST",
             url: 'http://proapi.115.com/app/chrome/downurl',
             headers: {
-              //  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36 115Browser/23.9.2',
                 'Content-Type':'application/x-www-form-urlencoded'
             },
             data: PostData({

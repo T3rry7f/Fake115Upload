@@ -253,7 +253,7 @@ class Fake115Client(object):
 			return False			
 
 	def show_folder_path(self):
-		url='https://webapi.115.com/files?aid=1&cid='+self.cid+'&o=user_ptime&asc=0&offset=0&show_dir=1&limit=115&code=&scid=&snap=0&natsort=1&record_open_time=1&source=&format=json&type=&star=&is_q=&is_share='
+		url='https://aps.115.com/natsort/files.php?aid=1&cid='+self.cid+'&o=user_ptime&asc=0&offset=0&show_dir=1&limit=115&code=&scid=&snap=0&natsort=1&record_open_time=1&source=&format=json&type=&star=&is_q=&is_share='
 		r = requests.get(url,headers=self.header)
 		resp=json.loads(r.content)['path']
 		path='{'

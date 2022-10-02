@@ -73,7 +73,7 @@ class  Fake115Client(object):
                 xorkey=b''
                 if  randkey:
                         for  i  in  range(0,sk_len):
-                                x=(randkey[i])  +  (self.g_kts[index])&0xff
+                                x=(randkey[i]  +  self.g_kts[index])&0xff
                                 xorkey += chr((self.g_kts[length]) ^ x).encode('latin1')
                                 length  -=sk_len
                                 index  +=sk_len

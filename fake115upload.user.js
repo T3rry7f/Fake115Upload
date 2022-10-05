@@ -13,6 +13,7 @@
 // @connect      115.com
 // @require      https://cdn.bootcss.com/jsSHA/2.3.1/sha1.js
 // @require      https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=115012
+// @require      https://gist.githubusercontent.com/BrockA/2625891/raw/9c97aa67ff9c5d56be34a55ad6c18a314e5eb548/waitForKeyElements.js
 // @require      https://cdn.jsdelivr.net/npm/node-forge@0.10.0/dist/forge.min.js
 // @downloadURL none
 // ==/UserScript==
